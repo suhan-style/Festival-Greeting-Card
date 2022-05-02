@@ -1,0 +1,190 @@
+<!doctype html>
+<html lang="en">
+	<head>
+		<!-- Required meta tags -->
+		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+        <meta http-equiv="X-UA-Compatible" content="chrome=1">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+        <meta http-equiv='cache-control' content='no-cache'>
+        <meta http-equiv='expires' content='0'>
+        <meta http-equiv='pragma' content='no-cache'>
+        <!-- favicon -->
+        <link rel="icon" href="favicon.png" sizes="16x16" type="image/png">
+		<!-- Bootstrap CSS -->
+		<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous">
+
+		<title>Festival Greeting</title>
+		
+		<style>
+		    label {
+		        text-align: right;
+		    }
+		    .form-control {
+		        text-align: right;
+		    }
+		    .btn-success {
+		        float: right;
+		        margin-right: 0px !important;
+		    }
+		
+		    @font-face {
+              font-family: 'LT-Bukra';
+              src: url('fonts/LTBukra-Medium.eot') format('embedded-opentype');
+              src: url('fonts/LTBukra-Medium.eot?#iefix') format('embedded-opentype'),
+				    url('fonts/LTBukra-Medium.woff2') format('woff2'),
+				    url('fonts/LTBukra-Medium.woff') format('woff'),
+				    url('fonts/LTBukra-Medium.otf') format('otf'),
+				    url('fonts/LTBukra-Medium.ttf' ) format('truetype'), 
+				    url('fonts/LTBukra-Medium.svg#LTBukra-Medium') format('svg');
+              font-weight:	normal;
+              font-style:	normal;
+            }
+            body {
+                font-family: 'LT-Bukra';
+            }
+            
+            .btn-success {
+                color: #fff !important;
+                background-color: #ed363d;
+                border-color: #ed363d;
+            }
+            .btn-success:hover,
+            .btn-success:not(:disabled):not(.disabled).active, .btn-success:not(:disabled):not(.disabled):active, .show>.btn-success.dropdown-toggle {
+                color: #ed363d !important;
+                background-color: #ffffff;
+                border-color: #ed363d;
+            }
+
+            .btn.focus, .btn:focus {
+                box-shadow: none;
+            }
+            #downloadLnk {
+                color: #2e5795 !important;
+                background-color: #fff !important;
+                border-color: #2e5795 !important;
+            }
+            #downloadLnk:hover {
+                color: #fff !important;
+                background-color: #2e5795 !important;
+                border-color: #2e5795;
+            }
+            #downloadLnk { display: none; }
+            canvas { display: none; }
+		</style>
+	</head>
+	<body>
+	    <div class="container-fluid">
+	        <div class="row align-items-center py-md-5 px-md-5">
+	            <div class="col-12 col-md-5 py-5">	                
+	                <label>يطيب لنا أن نقدم لك بطاقة تهنئة باسمك بمناسبة حلول عبد الفطر المبارك لعام ١٤٤٣ هـ</label>
+	                <input type="text" class="form-control mt-3" id="source_text" placeholder="اكتب اسمك هنا" required>
+		            <a class="btn btn-success mt-4 mr-3" id="addBtn" download="Eid_Mubarak-Almona_Plast.jpg">تحميل</a>
+		            <a id="downloadLnk" class="btn mt-4" download="Eid_Mubarak-Almona_Plast.jpg">تحميل</a>
+	            </div>
+	            <div class="col-12 col-md-7">
+	                <canvas id="pic_canvas" style="width:100%;"></canvas>
+	                <img src="download.jpeg" alt="Festive Banner" class="img-fluid" />
+	            </div>
+	        </div>
+	    </div>
+
+
+		<!-- jQuery first -->
+		<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+		
+		<script type="text/javascript">
+			jQuery(function($) {
+				
+				var base_img = "download.jpeg";
+				var imageObj = new Image();
+				var imgWidth;
+				var imgHeight;
+				
+				
+				var canvas = document.getElementById("pic_canvas");
+				var source_text = "";
+				
+				
+				// download canvas as image
+				function download() {
+				    var dt = canvas.toDataURL('image/jpg');
+				    this.href = dt;
+				};
+				var downloadLnk = document.getElementById('downloadLnk');
+				downloadLnk.addEventListener('click', download, false);
+				
+				
+				// add text on canvas
+				$("#addBtn").click(function(){
+					source_text = $("#source_text").val();
+					
+					if(source_text){
+						startDraw(source_text);
+						
+						setTimeout(function() {
+						    document.getElementById('downloadLnk').click();
+						},500);
+        				
+					}else{
+						alert("you have to write text");
+					}
+					
+				});
+				
+				
+				function startDraw(data){
+					imageObj.src = base_img;
+					
+					imageObj.onload = function(){
+						imgWidth = imageObj.width;
+						imgHeight = imageObj.height;
+						
+						canvas.width  = imgWidth;
+						canvas.height = imgHeight;
+						const x = canvas.width / 3;
+						var context = canvas.getContext("2d");
+						context.clearRect(0, 0, imgWidth, imgHeight);
+						context.drawImage(imageObj, 0, 0, imgWidth, imgHeight);
+						context.font = "34px myFont";
+						context.fillStyle = "#025C97";
+						data = data.replace(/\+/g, ' ');
+						context.textAlign = 'center';
+						context.fillText(decodeURIComponent(data), x, 718);
+						
+					};
+					
+				}
+				
+				/***
+				*	add google font asynchronously 				
+				*/
+				
+				// load google font == Satisfy
+				// WebFontConfig = {
+				// 	google:{ families: ['Satisfy'] },
+				// 	active: function(){startDraw(source_text);},
+				// };
+				
+				// (function(){
+				// 	var wf = document.createElement("script");
+				// 	wf.src = 'https://ajax.googleapis.com/ajax/libs/webfont/1.5.10/webfont.js';
+				// 	wf.async = 'true';
+				// 	document.head.appendChild(wf);
+				// })();
+				
+				
+				var myFont = new FontFace('myFont', 'url(myFont.otf)');
+
+                myFont.load().then(function(font){
+                    
+                    startDraw(source_text);
+                
+                  // with canvas, if this is ommited won't work
+                  document.fonts.add(font);
+                //   console.log('Font loaded');
+                });
+			
+			});
+		</script>
+	</body>
+</html>
